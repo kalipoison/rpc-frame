@@ -2,6 +2,9 @@ package com.gohb.rpc.exception;
 
 import com.gohb.rpc.enumeration.RpcError;
 
+/**
+ * RPCµ˜”√“Ï≥£
+ */
 public class RpcException extends RuntimeException {
 
     public RpcException(RpcError error, String detail) {

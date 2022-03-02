@@ -1,7 +1,6 @@
 package com.gohb.rpc.client;
 
 import com.gohb.rpc.entity.RpcRequest;
-import com.gohb.rpc.entity.RpcResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
