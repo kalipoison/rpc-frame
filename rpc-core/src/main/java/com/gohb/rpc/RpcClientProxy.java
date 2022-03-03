@@ -1,4 +1,4 @@
-package com.gohb.rpc.client;
+package com.gohb.rpc;
 
 import com.gohb.rpc.entity.RpcRequest;
 import org.slf4j.Logger;
@@ -15,12 +15,10 @@ public class RpcClientProxy implements InvocationHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcClientProxy.class);
 
-    private String host;
-    private int port;
+    private final RpcClient client;
 
-    public RpcClientProxy(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public RpcClientProxy(RpcClient client) {
+        this.client = client;
     }
 
     @SuppressWarnings("unchecked")
@@ -32,12 +30,8 @@ public class RpcClientProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         logger.info("调用方法: {}#{}", method.getDeclaringClass().getName(), method.getName());
-        RpcRequest rpcRequest = RpcRequest.builder()
-                .interfaceName(method.getDeclaringClass().getName())
-                .methodName(method.getName())
-                .parameters(args)
-                .paramTypes(method.getParameterTypes()).build();
-        RpcClient rpcClient = new RpcClient();
-        return rpcClient.sendRequest(rpcRequest, host, port);
+        RpcRequest rpcRequest = new RpcRequest(method.getDeclaringClass().getName(),
+                method.getName(), args, method.getParameterTypes());
+        return client.sendRequest(rpcRequest);
     }
 }

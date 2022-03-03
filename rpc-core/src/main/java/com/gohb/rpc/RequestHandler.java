@@ -1,4 +1,4 @@
-package com.gohb.rpc.server;
+package com.gohb.rpc;
 
 import com.gohb.rpc.entity.RpcRequest;
 import com.gohb.rpc.entity.RpcResponse;
@@ -6,15 +6,11 @@ import com.gohb.rpc.enumeration.ResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.Socket;
 
 /**
- * 实际进行过程调用的工作线程
+ * 进行过程调用的处理器
  */
 public class RequestHandler {
 
