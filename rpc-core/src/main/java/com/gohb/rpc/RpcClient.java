@@ -6,6 +6,7 @@ import com.gohb.rpc.entity.RpcResponse;
 import com.gohb.rpc.enumeration.ResponseCode;
 import com.gohb.rpc.enumeration.RpcError;
 import com.gohb.rpc.exception.RpcException;
+import com.gohb.rpc.serializer.CommonSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,5 +21,7 @@ import java.net.Socket;
 public interface RpcClient {
 
     Object sendRequest(RpcRequest rpcRequest);
+
+    void setSerializer(CommonSerializer serializer);
 
 }

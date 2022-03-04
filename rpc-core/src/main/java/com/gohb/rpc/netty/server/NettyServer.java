@@ -3,6 +3,9 @@ package com.gohb.rpc.netty.server;
 import com.gohb.rpc.RpcServer;
 import com.gohb.rpc.codec.CommonDecoder;
 import com.gohb.rpc.codec.CommonEncoder;
+import com.gohb.rpc.enumeration.RpcError;
+import com.gohb.rpc.exception.RpcException;
+import com.gohb.rpc.serializer.CommonSerializer;
 import com.gohb.rpc.serializer.HessianSerializer;
 import com.gohb.rpc.serializer.JsonSerializer;
 import com.gohb.rpc.serializer.KryoSerializer;
@@ -23,8 +26,14 @@ public class NettyServer implements RpcServer {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
+    private CommonSerializer serializer;
+
     @Override
     public void start(int port) {
+        if(serializer == null) {
+            logger.error("Œ¥…Ë÷√–Ú¡–ªØ∆˜");
+            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
+        }
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -54,6 +63,11 @@ public class NettyServer implements RpcServer {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+    }
+
+    @Override
+    public void setSerializer(CommonSerializer serializer) {
+        this.serializer = serializer;
     }
 
 }
