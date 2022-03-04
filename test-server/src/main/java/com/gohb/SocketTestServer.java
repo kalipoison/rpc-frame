@@ -17,7 +17,7 @@ public class SocketTestServer {
         serviceRegistry.register(helloService);
         SocketServer socketServer = new SocketServer(serviceRegistry);
         socketServer.setSerializer(new KryoSerializer());
-        socketServer.start(9000);
+        socketServer.start(9999);
     }
 
 }

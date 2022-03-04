@@ -10,6 +10,7 @@ import com.gohb.rpc.exception.RpcException;
 import com.gohb.rpc.serializer.CommonSerializer;
 import com.gohb.rpc.util.ObjectReader;
 import com.gohb.rpc.util.ObjectWriter;
+import com.gohb.rpc.util.RpcMessageChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,7 @@ public class SocketClient implements RpcClient {
                 logger.error("调用服务失败, service: {}, response:{}", rpcRequest.getInterfaceName(), rpcResponse);
                 throw new RpcException(RpcError.SERVICE_INVOCATION_FAILURE, " service:" + rpcRequest.getInterfaceName());
             }
+            RpcMessageChecker.check(rpcRequest, rpcResponse);
             return rpcResponse.getData();
         } catch (IOException e) {
             logger.error("调用失败", e);

@@ -11,6 +11,7 @@ import com.gohb.rpc.serializer.CommonSerializer;
 import com.gohb.rpc.serializer.HessianSerializer;
 import com.gohb.rpc.serializer.JsonSerializer;
 import com.gohb.rpc.serializer.KryoSerializer;
+import com.gohb.rpc.util.RpcMessageChecker;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -74,8 +75,9 @@ public class NettyClient implements RpcClient {
                     }
                 });
                 channel.closeFuture().sync();
-                AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse");
+                AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse" + rpcRequest.getRequestId());
                 RpcResponse rpcResponse = channel.attr(key).get();
+                RpcMessageChecker.check(rpcRequest, rpcResponse);
                 return rpcResponse.getData();
             }
 
