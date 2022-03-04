@@ -6,6 +6,7 @@ import com.gohb.rpc.enumeration.RpcError;
 import com.gohb.rpc.exception.RpcException;
 import com.gohb.rpc.registry.ServiceRegistry;
 import com.gohb.rpc.serializer.CommonSerializer;
+import com.gohb.rpc.util.ThreadPoolFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +22,6 @@ public class SocketServer implements RpcServer {
 
     private final Logger logger = LoggerFactory.getLogger(SocketServer.class);
 
-    private static final int CORE_POOL_SIZE = 5;
-    private static final int MAXIMUM_POOL_SIZE = 50;
-    private static final int KEEP_ALIVE_TIME = 60;
-    private static final int BLOCKING_QUEUE_CAPACITY = 100;
     private final ExecutorService threadPool;
     private RequestHandler requestHandler = new RequestHandler();
     private CommonSerializer serializer;
@@ -32,9 +29,7 @@ public class SocketServer implements RpcServer {
 
     public SocketServer(ServiceRegistry serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
-        BlockingQueue<Runnable> workingQueue = new ArrayBlockingQueue<>(BLOCKING_QUEUE_CAPACITY);
-        ThreadFactory threadFactory = Executors.defaultThreadFactory();
-        threadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, workingQueue, threadFactory);
+        threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
     }
 
     @Override
