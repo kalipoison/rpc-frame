@@ -1,5 +1,6 @@
 package com.gohb.rpc.transport.netty.server;
 
+import com.gohb.rpc.hook.ShutdownHook;
 import com.gohb.rpc.provider.ServiceProvider;
 import com.gohb.rpc.provider.ServiceProviderImpl;
 import com.gohb.rpc.registry.NacosServiceRegistry;
@@ -80,7 +81,7 @@ public class NettyServer implements RpcServer {
                     });
             ChannelFuture future = serverBootstrap.bind(host, port).sync();
             future.channel().closeFuture().sync();
-
+            ShutdownHook.getShutdownHook().addClearAllHook();
         } catch (InterruptedException e) {
             logger.error("启动服务器时有错误发生: ", e);
         } finally {

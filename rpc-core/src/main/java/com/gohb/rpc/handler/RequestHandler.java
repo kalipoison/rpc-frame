@@ -24,25 +24,22 @@ public class RequestHandler {
     }
 
     public Object handle(RpcRequest rpcRequest) {
-        Object result = null;
         Object service = serviceProvider.getServiceProvider(rpcRequest.getInterfaceName());
+        return invokeTargetMethod(rpcRequest, service);
+    }
+
+    private Object invokeTargetMethod(RpcRequest rpcRequest, Object service) {
+        Object result;
         try {
-            result = invokeTargetMethod(rpcRequest, service);
+            Method method = service.getClass().getMethod(rpcRequest.getMethodName(), rpcRequest.getParamTypes());
+            result = method.invoke(service, rpcRequest.getParameters());
             logger.info("服务:{} 成功调用方法:{}", rpcRequest.getInterfaceName(), rpcRequest.getMethodName());
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             logger.error("调用或发送时有错误发生：", e);
+            return RpcResponse.fail(ResponseCode.METHOD_NOT_FOUND, rpcRequest.getRequestId());
         }
         return result;
     }
 
-    private Object invokeTargetMethod(RpcRequest rpcRequest, Object service) throws IllegalAccessException, InvocationTargetException {
-        Method method;
-        try {
-            method = service.getClass().getMethod(rpcRequest.getMethodName(), rpcRequest.getParamTypes());
-        } catch (NoSuchMethodException e) {
-            return RpcResponse.fail(ResponseCode.METHOD_NOT_FOUND, rpcRequest.getRequestId());
-        }
-        return method.invoke(service, rpcRequest.getParameters());
-    }
 
 }

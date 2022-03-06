@@ -1,6 +1,7 @@
 package com.gohb.rpc.transport.socket.server;
 
 import com.gohb.rpc.handler.RequestHandler;
+import com.gohb.rpc.hook.ShutdownHook;
 import com.gohb.rpc.provider.ServiceProvider;
 import com.gohb.rpc.provider.ServiceProviderImpl;
 import com.gohb.rpc.registry.NacosServiceRegistry;
@@ -9,7 +10,7 @@ import com.gohb.rpc.enumeration.RpcError;
 import com.gohb.rpc.exception.RpcException;
 import com.gohb.rpc.registry.ServiceRegistry;
 import com.gohb.rpc.serializer.CommonSerializer;
-import com.gohb.rpc.util.ThreadPoolFactory;
+import com.gohb.rpc.factory.ThreadPoolFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,12 +58,14 @@ public class SocketServer implements RpcServer {
 
     @Override
     public void start() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        try (ServerSocket serverSocket = new ServerSocket()) {
+            serverSocket.bind(new InetSocketAddress(host, port));
             logger.info("服务器启动……");
+            ShutdownHook.getShutdownHook().addClearAllHook();
             Socket socket;
             while ((socket = serverSocket.accept()) != null) {
                 logger.info("消费者连接: {}:{}", socket.getInetAddress(), socket.getPort());
-                threadPool.execute(new RequestHandlerThread(socket, requestHandler, serviceRegistry, serializer));
+                threadPool.execute(new SocketRequestHandlerThread(socket, requestHandler, serviceRegistry, serializer));
             }
             threadPool.shutdown();
         } catch (IOException e) {
