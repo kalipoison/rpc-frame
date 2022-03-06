@@ -1,4 +1,4 @@
-package com.gohb.rpc.netty.client;
+package com.gohb.rpc.transport.netty.client;
 
 import com.gohb.rpc.entity.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;

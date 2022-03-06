@@ -1,4 +1,4 @@
-package com.gohb.rpc;
+package com.gohb.rpc.transport;
 
 import com.gohb.rpc.entity.RpcRequest;
 import org.slf4j.Logger;

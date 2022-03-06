@@ -1,12 +1,12 @@
-package com.gohb.rpc.socket.server;
+package com.gohb.rpc.transport.socket.server;
 
-import com.gohb.rpc.RequestHandler;
+import com.gohb.rpc.handler.RequestHandler;
 import com.gohb.rpc.entity.RpcRequest;
 import com.gohb.rpc.entity.RpcResponse;
 import com.gohb.rpc.registry.ServiceRegistry;
 import com.gohb.rpc.serializer.CommonSerializer;
-import com.gohb.rpc.util.ObjectReader;
-import com.gohb.rpc.util.ObjectWriter;
+import com.gohb.rpc.transport.socket.util.ObjectReader;
+import com.gohb.rpc.transport.socket.util.ObjectWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +38,7 @@ public class RequestHandlerThread implements Runnable {
              OutputStream outputStream = socket.getOutputStream()) {
             RpcRequest rpcRequest = (RpcRequest) ObjectReader.readObject(inputStream);
             String interfaceName = rpcRequest.getInterfaceName();
-            Object service = serviceRegistry.getService(interfaceName);
-            Object result = requestHandler.handle(rpcRequest, service);
+            Object result = requestHandler.handle(rpcRequest);
             RpcResponse<Object> response = RpcResponse.success(result, rpcRequest.getRequestId());
             ObjectWriter.writeObject(outputStream, response, serializer);
         } catch (IOException e) {

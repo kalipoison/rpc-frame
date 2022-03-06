@@ -1,4 +1,4 @@
-package com.gohb.rpc.util;
+package com.gohb.rpc.transport.socket.util;
 
 import com.gohb.rpc.entity.RpcRequest;
 import com.gohb.rpc.enumeration.PackageType;

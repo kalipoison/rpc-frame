@@ -1,4 +1,4 @@
-package com.gohb.rpc.netty.client;
+package com.gohb.rpc.transport.netty.client;
 
 import com.gohb.rpc.codec.CommonDecoder;
 import com.gohb.rpc.codec.CommonEncoder;
