@@ -1,7 +1,9 @@
 package com.gohb.rpc.transport.socket.client;
 
 
+import com.gohb.rpc.registry.NacosServiceDiscovery;
 import com.gohb.rpc.registry.NacosServiceRegistry;
+import com.gohb.rpc.registry.ServiceDiscovery;
 import com.gohb.rpc.registry.ServiceRegistry;
 import com.gohb.rpc.transport.RpcClient;
 import com.gohb.rpc.entity.RpcRequest;
@@ -28,12 +30,12 @@ public class SocketClient implements RpcClient {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketClient.class);
 
-    private final ServiceRegistry serviceRegistry;
+    private final ServiceDiscovery serviceDiscovery;
 
     private CommonSerializer serializer;
 
     public SocketClient() {
-        this.serviceRegistry = new NacosServiceRegistry();
+        this.serviceDiscovery = new NacosServiceDiscovery();
     }
 
     @Override
@@ -42,7 +44,7 @@ public class SocketClient implements RpcClient {
             logger.error("Œ¥…Ë÷√–Ú¡–ªØ∆˜");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+        InetSocketAddress inetSocketAddress = serviceDiscovery.lookupService(rpcRequest.getInterfaceName());
         try (Socket socket = new Socket()) {
             socket.connect(inetSocketAddress);
             OutputStream outputStream = socket.getOutputStream();

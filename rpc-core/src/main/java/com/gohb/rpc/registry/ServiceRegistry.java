@@ -3,7 +3,7 @@ package com.gohb.rpc.registry;
 import java.net.InetSocketAddress;
 
 /**
- * 服务注册表通用接口
+ * 服务注册接口
  */
 public interface ServiceRegistry {
 
@@ -13,14 +13,5 @@ public interface ServiceRegistry {
      * @param inetSocketAddress 提供服务的地址
      */
     void register(String serviceName, InetSocketAddress inetSocketAddress);
-
-
-    /**
-     * 根据服务名称获取服务实体
-     * @param serviceName 服务名称
-     * @return 服务实体
-     */
-    InetSocketAddress lookupService(String serviceName);
-
 
 }

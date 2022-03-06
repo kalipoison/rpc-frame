@@ -1,6 +1,8 @@
 package com.gohb.rpc.transport.netty.client;
 
+import com.gohb.rpc.registry.NacosServiceDiscovery;
 import com.gohb.rpc.registry.NacosServiceRegistry;
+import com.gohb.rpc.registry.ServiceDiscovery;
 import com.gohb.rpc.registry.ServiceRegistry;
 import com.gohb.rpc.transport.RpcClient;
 import com.gohb.rpc.entity.RpcRequest;
@@ -29,10 +31,10 @@ public class NettyClient implements RpcClient {
 
 
     private static final Bootstrap bootstrap;
-    private final ServiceRegistry serviceRegistry;
+    private final ServiceDiscovery serviceDiscovery;
 
     public NettyClient() {
-        this.serviceRegistry = new NacosServiceRegistry();
+        this.serviceDiscovery = new NacosServiceDiscovery();
     }
 
     private CommonSerializer serializer;
@@ -53,7 +55,7 @@ public class NettyClient implements RpcClient {
         }
         AtomicReference<Object> result = new AtomicReference<>(null);
         try {
-            InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+            InetSocketAddress inetSocketAddress = serviceDiscovery.lookupService(rpcRequest.getInterfaceName());
             Channel channel = ChannelProvider.get(inetSocketAddress, serializer);
             if(channel.isActive()) {
                 channel.writeAndFlush(rpcRequest).addListener(future1 -> {
@@ -69,6 +71,7 @@ public class NettyClient implements RpcClient {
                 RpcMessageChecker.check(rpcRequest, rpcResponse);
                 result.set(rpcResponse.getData());
             } else {
+                channel.close();
                 System.exit(0);
             }
 
