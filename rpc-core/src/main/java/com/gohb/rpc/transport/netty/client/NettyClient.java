@@ -1,6 +1,8 @@
 package com.gohb.rpc.transport.netty.client;
 
 import com.gohb.rpc.factory.SingletonFactory;
+import com.gohb.rpc.loadbalancer.LoadBalancer;
+import com.gohb.rpc.loadbalancer.RandomLoadBalancer;
 import com.gohb.rpc.registry.NacosServiceDiscovery;
 import com.gohb.rpc.registry.NacosServiceRegistry;
 import com.gohb.rpc.registry.ServiceDiscovery;
@@ -37,11 +39,19 @@ public class NettyClient implements RpcClient {
     private final UnprocessedRequests unprocessedRequests;
 
     public NettyClient() {
-        this(DEFAULT_SERIALIZER);
+        this(DEFAULT_SERIALIZER, new RandomLoadBalancer());
+    }
+
+    public NettyClient(LoadBalancer loadBalancer) {
+        this(DEFAULT_SERIALIZER, loadBalancer);
     }
 
     public NettyClient(Integer serializer) {
-        this.serviceDiscovery = new NacosServiceDiscovery();
+        this(serializer, new RandomLoadBalancer());
+    }
+
+    public NettyClient(Integer serializer, LoadBalancer loadBalancer) {
+        this.serviceDiscovery = new NacosServiceDiscovery(loadBalancer);
         this.serializer = CommonSerializer.getByCode(serializer);
         this.unprocessedRequests = SingletonFactory.getInstance(UnprocessedRequests.class);
     }
